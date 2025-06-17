@@ -63,7 +63,10 @@ class XmlSerializer(SerializeStrategy):
         return ETree.tostring(root, encoding="unicode")
 
 
-def main(book: Book, commands: list[tuple[str, str]]) -> str | None:
+def main(
+        book: Book,
+        commands: list[tuple[str, str]]
+) -> list[str | None] | None:
     display_strategies = {
         "console": ConsoleDisplay(),
         "reverse": ReverseDisplay(),
@@ -79,21 +82,29 @@ def main(book: Book, commands: list[tuple[str, str]]) -> str | None:
         "xml": XmlSerializer(),
     }
 
+    results = []
+
     for cmd, method_type in commands:
         if cmd == "display":
             execute_strategy(display_strategies, method_type, book, "display")
+            results.append(None)
 
         elif cmd == "print":
             execute_strategy(print_strategies, method_type, book, "print")
+            results.append(None)
 
         elif cmd == "serialize":
-            return execute_strategy(
-                serialize_strategies, method_type, book, "serialize",
+            result = execute_strategy(
+                serialize_strategies, method_type, book, "serialize"
             )
+            results.append(result)
+
         else:
             raise ValueError(f"Unknown command: {cmd}")
 
-    return None
+    if len(results) == 1:
+        return results[0]
+    return results
 
 
 if __name__ == "__main__":
