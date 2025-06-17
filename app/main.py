@@ -1,11 +1,11 @@
 import json
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ETree
 from abc import ABC, abstractmethod
 from app.utils import execute_strategy
 
 
 class Book:
-    def __init__(self, title: str, content: str):
+    def __init__(self, title: str, content: str) -> None:
         self.title = title
         self.content = content
 
@@ -57,18 +57,27 @@ class JsonSerializer(SerializeStrategy):
 
 class XmlSerializer(SerializeStrategy):
     def serialize(self, book: Book) -> str:
-        root = ET.Element("book")
-        ET.SubElement(root, "title").text = book.title
-        ET.SubElement(root, "content").text = book.content
-        return ET.tostring(root, encoding="unicode")
+        root = ETree.Element("book")
+        ETree.SubElement(root, "title").text = book.title
+        ETree.SubElement(root, "content").text = book.content
+        return ETree.tostring(root, encoding="unicode")
 
 
 def main(book: Book, commands: list[tuple[str, str]]) -> str | None:
-    display_strategies = {"console": ConsoleDisplay(), "reverse": ReverseDisplay()}
+    display_strategies = {
+        "console": ConsoleDisplay(),
+        "reverse": ReverseDisplay(),
+    }
 
-    print_strategies = {"console": ConsolePrint(), "reverse": ReversePrint()}
+    print_strategies = {
+        "console": ConsolePrint(),
+        "reverse": ReversePrint(),
+    }
 
-    serialize_strategies = {"json": JsonSerializer(), "xml": XmlSerializer()}
+    serialize_strategies = {
+        "json": JsonSerializer(),
+        "xml": XmlSerializer(),
+    }
 
     for cmd, method_type in commands:
         if cmd == "display":
@@ -79,7 +88,7 @@ def main(book: Book, commands: list[tuple[str, str]]) -> str | None:
 
         elif cmd == "serialize":
             return execute_strategy(
-                serialize_strategies, method_type, book, "serialize"
+                serialize_strategies, method_type, book, "serialize",
             )
         else:
             raise ValueError(f"Unknown command: {cmd}")

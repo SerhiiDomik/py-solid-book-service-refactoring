@@ -1,5 +1,11 @@
+from typing import Any
+
+
 def execute_strategy(
-    strategy_map: dict, method_type: str, book, action: str
+    strategy_map: dict[str, Any],
+    method_type: str,
+    book: Any,
+    action: str
 ) -> str | None:
     strategy = strategy_map.get(method_type)
     if not strategy:
